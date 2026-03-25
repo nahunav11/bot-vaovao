@@ -5,35 +5,28 @@ import google.generativeai as genai
 
 app = Flask(__name__)
 
-# 1. CONFIGURACIÓN DE IA (Tu llave de Google ya está puesta)
+# 1. CONFIGURACIÓN DE IA (Google Gemini)
 genai.configure(api_key="AIzaSyCH4POJYJjAICKXR1v9uv69vf8k5HZgNGQ")
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-# 2. CONFIGURACIÓN DE WHATSAPP (Meta)
-# REEMPLAZA LO QUE ESTÁ ENTRE COMILLAS POR TU TOKEN DE META
-ACCESS_TOKEN = "EAAPHywZC06M8BRPTXsCuCZCoSjIquqKMsFq6JD9IWnqebjHIqDlCNNrk2BIilPRZAJl3ZAIEszxvWVBGz0Hd9qrqP5F8pOukXhbUWRZBJ2uOeCJvz9NvCf8zeTb7rWq5hKlTl5WlQTKvhi0ZBy1r1NKIVhXq7aJ8De8wXHjtZC8WFtM9loWdLszBvkuZAjirVI6dcmSbBMtSTN19qqW21ySBKiO1ZA0T34cZBA1XSaEligZCCfBKo6upOG8GJ6orUzmO0uZCWBjZCGYGrK8ADI1JtvBEYI6gq" 
+# 2. CONFIGURACIÓN DE WHATSAPP (Meta) - TOKEN ACTUALIZADO
+ACCESS_TOKEN = "EAAPHywZC06M8BRDVZBJyLMQ0BDyE57vlJ23EUnCAJ517gA9SWNZCM6aVKTy9KclaJaNC0GppNj811XV3QFRlgRBBZAx3GSXp6hTueUE2AJYLWlf8BGomi1SqZBtrUZBYFD6pcRgMqQfuwP4ByhJ1PPpUGEnLOOoPrWlHAhPhd2kT9XvlLoizsOMnPUAcQHPRgZCRrbGtuKZAgbfbZAa36k7jBGATfU7gOvgpij89w0eVXqqGQnGdwonBlqu4G656xwrEm0xSJJPMOpIgazxjzjZAmyb63ZA"
 PHONE_NUMBER_ID = "1016082411589978"
 
-# PERSONALIDAD DE RAMA (Tu ventaja competitiva)
+# PERSONALIDAD DE RAMA
 SYSTEM_PROMPT = """
 Eres Rama, el asistente virtual de Vaovao (www.vaovao.com.ar). 
-Tu objetivo es asesorar sobre madera plástica 100% reciclada para Decks, Revestimientos, Mobiliarios y Pérgolas.
-
-REGLAS DE ORO:
-1. MATERIAL: Aclara siempre que NO es PVC ni WPC. Es madera plástica premium, no se pudre, no se deforma y es eterna. ♻️
-2. CALOR: Explica que tiene una temperatura intermedia entre hormigón y madera. No quema al caminar descalzo y si se moja con agua baja la temperatura al toque. ☀️
-3. PRECIOS: No des presupuestos. Dile: "Para darte un presupuesto exacto, pasame tu nombre, qué proyecto tenés en mente y en qué zona estás. Un asesor te contactará en menos de 24hs".
-4. INSTALACIÓN: Se trabaja igual que la madera (mismas herramientas). Tenemos manual y video instructivo. 🪵
-5. ENVÍOS: Hacemos envíos a todo el país. 🇦🇷
-6. TONO: Profesional, amigable, humano y usa emojis.
+Asesoras sobre madera plástica 100% reciclada para Decks y Pérgolas.
+REGLAS: No es PVC ni WPC. Es eterna y no lleva mantenimiento. 
+Si piden precio, solicita nombre, zona y proyecto para que un asesor los contacte.
+Usa emojis y sé muy amable. ♻️🪵
 """
 
 @app.route('/webhook', methods=['GET'])
 def verificar_token():
-    # Esto es para que Meta verifique que tu servidor funciona
     token = request.args.get('hub.verify_token')
     challenge = request.args.get('hub.challenge')
-    if token == "vaovao_token_seguro": 
+    if token == "vaovao_token_seguro":
         return challenge
     return "Error de token", 403
 
@@ -41,19 +34,20 @@ def verificar_token():
 def recibir_mensajes():
     try:
         body = request.get_json()
-        entry = body['entry'][0]
-        changes = entry['changes'][0]
-        value = changes['value']
+        print(f"--- NUEVO MENSAJE RECIBIDO ---")
         
-        if 'messages' in value:
-            mensaje_texto = value['messages'][0]['text']['body']
-            numero_destino = value['messages'][0]['from']
+        # Extraer datos del mensaje
+        entry = body['entry'][0]['changes'][0]['value']
+        if 'messages' in entry:
+            mensaje_texto = entry['messages'][0]['text']['body']
+            numero_cliente = entry['messages'][0]['from']
+            print(f"Cliente ({numero_cliente}) dijo: {mensaje_texto}")
 
-            # 1. Rama genera la respuesta usando la IA
+            # 1. Rama genera la respuesta con IA
             prompt_completo = f"{SYSTEM_PROMPT}\nCliente dice: {mensaje_texto}"
             respuesta_ia = model.generate_content(prompt_completo).text
 
-            # 2. Enviar la respuesta de vuelta a WhatsApp
+            # 2. Enviar la respuesta a WhatsApp
             url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
             headers = {
                 "Authorization": f"Bearer {ACCESS_TOKEN}", 
@@ -61,15 +55,19 @@ def recibir_mensajes():
             }
             data = {
                 "messaging_product": "whatsapp",
-                "to": numero_destino,
+                "to": numero_cliente,
                 "type": "text",
                 "text": {"body": respuesta_ia}
             }
-            requests.post(url, json=data, headers=headers)
+            
+            response = requests.post(url, json=data, headers=headers)
+            print(f"Estado del envío a Meta: {response.status_code}")
+            if response.status_code != 200:
+                print(f"Detalle del error de Meta: {response.text}")
 
         return jsonify({"status": "ok"}), 200
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"ERROR CRÍTICO: {e}")
         return jsonify({"status": "error"}), 500
 
 if __name__ == "__main__":
