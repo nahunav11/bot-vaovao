@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # 1. CONFIGURACIÓN DE IA (Google Gemini)
 genai.configure(api_key="AIzaSyCH4POJYJjAICKXR1v9uv69vf8k5HZgNGQ")
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-pro')
 
 # 2. CONFIGURACIÓN DE WHATSAPP (Meta) - TOKEN ACTUALIZADO
 ACCESS_TOKEN = "EAAPHywZC06M8BRDVZBJyLMQ0BDyE57vlJ23EUnCAJ517gA9SWNZCM6aVKTy9KclaJaNC0GppNj811XV3QFRlgRBBZAx3GSXp6hTueUE2AJYLWlf8BGomi1SqZBtrUZBYFD6pcRgMqQfuwP4ByhJ1PPpUGEnLOOoPrWlHAhPhd2kT9XvlLoizsOMnPUAcQHPRgZCRrbGtuKZAgbfbZAa36k7jBGATfU7gOvgpij89w0eVXqqGQnGdwonBlqu4G656xwrEm0xSJJPMOpIgazxjzjZAmyb63ZA"
