@@ -6,6 +6,7 @@ from google import genai
 app = Flask(__name__)
 
 # --- CONFIGURACIÓN DE IA ---
+# Usamos el modelo que viste en la imagen
 GEMINI_API_KEY = "AIzaSyCH4POJYJjAICKXR1v9uv69vf8k5HZgNGQ"
 client = genai.Client(api_key=GEMINI_API_KEY)
 
@@ -34,9 +35,9 @@ def recibir_mensajes():
             
             print(f"--- NUEVO MENSAJE: {mensaje_texto} ---")
 
-            # IA piensa (Cambio clave aquí: usamos el nombre del modelo sin 'models/')
+            # IA piensa usando GEMINI 3 FLASH
             response_ia = client.models.generate_content(
-                model="gemini-1.5-flash", 
+                model="gemini-3-flash", 
                 contents=f"{SYSTEM_PROMPT}\nCliente: {mensaje_texto}"
             )
             texto_para_enviar = response_ia.text
