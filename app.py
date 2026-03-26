@@ -5,7 +5,7 @@ from google import genai
 
 
 app = Flask(__name__)
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+client = genai.Client(api_key=os.environ.get("AIzaSyCH4POJYJjAICKXR1v9uv69vf8k5HZgNGQ"))
 
 # 1. CONFIGURACIÓN DE IA (Google Gemini)
 # Cambiamos a 'gemini-1.5-flash' SIN el 'latest' y forzamos la configuración
