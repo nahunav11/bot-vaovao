@@ -1,14 +1,15 @@
 import os
 import requests
 from flask import Flask, request, jsonify
-import google.generativeai as genai
+from google import genai
+
 
 app = Flask(__name__)
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 # 1. CONFIGURACIÓN DE IA (Google Gemini)
 # Cambiamos a 'gemini-1.5-flash' SIN el 'latest' y forzamos la configuración
-genai.configure(api_key="AIzaSyCH4POJYJjAICKXR1v9uv69vf8k5HZgNGQ")
-model = genai.GenerativeModel('models/gemini-1.5-flash')
+
 
 # 2. CONFIGURACIÓN DE WHATSAPP (Meta) - TOKEN PERMANENTE
 ACCESS_TOKEN = "EAAPHywZC06M8BRLE0cZCfZBwOIUZBfEPn9T2ctEZB1jS8a1mvUX1SAzFIuuhSJDz2ZCcnnOC22RsGHS6iG76Up2ZCLoQBU7mazAs9ZAbjWtKMJzNrwerUj9ndDpwwavP1vxi5G3wiQ9gnwI6v5fjGJBQo19sSTlk6rfEuWH5DH57B9ntvt9OEKAHShxgbeKdSMGucAZDZD"
