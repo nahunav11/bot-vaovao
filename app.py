@@ -43,7 +43,7 @@ def recibir():
 
             # --- GEMINI RESPUESTA (MODELO CORREGIDO) ---
             response = client.models.generate_content(
-                model="gemini-1.5-flash",
+                model="gemini-1.5-flash-latest",
                 contents=[
                     {
                         "role": "user",
