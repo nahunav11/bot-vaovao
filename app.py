@@ -6,7 +6,7 @@ from flask import Flask, request
 app = Flask(__name__)
 
 ACCESS_TOKEN = "EAAPHywZC06M8BRLE0cZCfZBwOIUZBfEPn9T2ctEZB1jS8a1mvUX1SAzFIuuhSJDz2ZCcnnOC22RsGHS6iG76Up2ZCLoQBU7mazAs9ZAbjWtKMJzNrwerUj9ndDpwwavP1vxi5G3wiQ9gnwI6v5fjGJBQo19sSTlk6rfEuWH5DH57B9ntvt9OEKAHShxgbeKdSMGucAZDZD"
-PHONE_NUMBER_ID = "1016082411589978"
+PHONE_NUMBER_ID = "1073112645888097"
 
 # --- MOTOR "TIPO IA" ---
 def generar_respuesta(texto):
