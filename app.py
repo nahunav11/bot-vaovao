@@ -43,17 +43,16 @@ def recibir():
 
             # --- GEMINI RESPUESTA (MODELO CORREGIDO) ---
             response = client.models.generate_content(
-                model="gemini-2.0-flash",
+                model="gemini-1.5-flash",
                 contents=[
                     {
                         "role": "user",
                         "parts": [
                             {"text": f"{SYSTEM_PROMPT}\nCliente: {texto_cliente}"}
-                        ]
-                    }
                 ]
-            )
-
+            }
+        ]
+    )
             respuesta_texto = response.text if hasattr(response, "text") else "No pude responder en este momento."
 
             print(f"Respuesta IA: {respuesta_texto}")
