@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Heart_coraz%C3%B3n.svg/1200px-Heart_coraz%C3%B3n.svg.png">
+    <title>Flor & Nahu ❤️</title>
+    
+    <!-- Tailwind CSS para el diseño -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Firebase Compat SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #312e81, #111827);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            min-height: 100vh;
+            padding-bottom: 90px; /* Espacio para el menú inferior */
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 1.5rem;
+        }
+
+        .glass-hot {
+            background: rgba(220, 38, 38, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            box-shadow: 0 4px 30px rgba(220, 38, 38, 0.2);
+        }
+
+        .heartbeat { animation: heartbeat 1.5s infinite; }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); color: #ef4444; }
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex justify-center items-start selection:bg-pink-500/30">
+
+    <div class="max-w-md w-full mx-auto relative">
+        
+        <!-- ================= VISTA 1: INICIO (DASHBOARD) ================= -->
+        <div id="view-home" class="view-section space-y-6 animate-fade-in">
+            <header class="text-center space-y-2 pt-2">
+                <h1 class="text-4xl font-extrabold tracking-tight drop-shadow-lg">Flor <i class="fa-solid fa-heart heartbeat text-pink-500"></i> Nahu</h1>
+                <p class="text-sm text-gray-300 font-medium">Contando cada segundo:</p>
+                <div class="glass p-4 flex justify-around text-center border-t-2 border-t-pink-500/50">
+                    <div><span class="block text-3xl font-black text-pink-400 drop-shadow-md">3</span><span class="text-xs uppercase tracking-wider text-gray-400">Años</span></div>
+                    <div><span class="block text-3xl font-black text-pink-400 drop-shadow-md">5</span><span class="text-xs uppercase tracking-wider text-gray-400">Meses</span></div>
+                    <div><span class="block text-3xl font-black text-pink-400 drop-shadow-md">12</span><span class="text-xs uppercase tracking-wider text-gray-400">Días</span></div>
+                </div>
+            </header>
+
+            <div class="glass p-5 rounded-2xl relative overflow-hidden">
+                <div class="absolute -right-6 -top-6 opacity-10 text-8xl"><i class="fa-solid fa-pills"></i></div>
+                <h2 class="text-sm font-bold text-white mb-4 uppercase tracking-widest flex items-center relative z-10"><i class="fa-solid fa-prescription-bottle-medical text-purple-400 mr-2 text-lg"></i>Control Diario</h2>
+                <div class="grid grid-cols-2 gap-4 relative z-10">
+                    <div class="bg-black/30 p-3 rounded-xl border border-white/5 text-center">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-gray-300">Flor</span>
+                            <i class="fa-solid fa-sun text-yellow-400"></i>
+                        </div>
+                        <button id="btn-pastilla-flor-am" onclick="tomarPastilla('flor-am')" class="w-full bg-purple-500/30 hover:bg-purple-500/50 border border-purple-500/50 text-xs py-2 rounded-lg transition font-semibold text-purple-100">10:00 AM</button>
+                    </div>
+                    <div class="bg-black/30 p-3 rounded-xl border border-white/5 text-center">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-gray-300">Flor</span>
+                            <i class="fa-solid fa-moon text-blue-400"></i>
+                        </div>
+                        <button id="btn-pastilla-flor-pm" onclick="tomarPastilla('flor-pm')" class="w-full bg-purple-500/30 hover:bg-purple-500/50 border border-purple-500/50 text-xs py-2 rounded-lg transition font-semibold text-purple-100">10:00 PM</button>
+                    </div>
+                    <div class="bg-black/30 p-3 rounded-xl border border-white/5 text-center col-span-2">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-gray-300">Nahu</span>
+                            <i class="fa-solid fa-sun text-yellow-400"></i>
+                        </div>
+                        <button id="btn-pastilla-nahu-am" onclick="tomarPastilla('nahu-am')" class="w-full bg-blue-500/30 hover:bg-blue-500/50 border border-blue-500/50 text-xs py-2 rounded-lg transition font-semibold text-blue-100">10:00 AM</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-sm font-bold text-white uppercase tracking-widest"><i class="fa-solid fa-store text-yellow-400 mr-2 text-lg"></i>Mercado de Favores</h2>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center bg-black/40 p-4 rounded-xl border border-white/10 shadow-inner relative overflow-hidden group">
+                        <div class="absolute left-0 top-0 w-1 h-full bg-pink-500 transition-all group-hover:w-full group-hover:opacity-10 z-0"></div>
+                        <div class="flex items-center space-x-4 relative z-10">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center font-bold text-lg shadow-lg">F</div>
+                            <div>
+                                <p class="text-xs text-gray-400 uppercase tracking-wider">Puntos de Flor</p>
+                                <p id="pts-flor" class="text-xl font-black text-white">1,250</p>
+                            </div>
+                        </div>
+                        <button onclick="abrirTienda('Flor')" class="relative z-10 bg-white/10 border border-white/20 px-4 py-2 text-xs font-bold rounded-lg hover:bg-pink-500 hover:border-transparent transition-all shadow-[0_0_10px_rgba(236,72,153,0.1)]">Canjear</button>
+                    </div>
+
+                    <div class="flex justify-between items-center bg-black/40 p-4 rounded-xl border border-white/10 shadow-inner relative overflow-hidden group">
+                        <div class="absolute left-0 top-0 w-1 h-full bg-blue-500 transition-all group-hover:w-full group-hover:opacity-10 z-0"></div>
+                        <div class="flex items-center space-x-4 relative z-10">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center font-bold text-lg shadow-lg">N</div>
+                            <div>
+                                <p class="text-xs text-gray-400 uppercase tracking-wider">Puntos de Nahu</p>
+                                <p id="pts-nahu" class="text-xl font-black text-white">840</p>
+                            </div>
+                        </div>
+                        <button onclick="abrirTienda('Nahu')" class="relative z-10 bg-white/10 border border-white/20 px-4 py-2 text-xs font-bold rounded-lg hover:bg-blue-500 hover:border-transparent transition-all shadow-[0_0_10px_rgba(59,130,246,0.1)]">Canjear</button>
+                    </div>
+                </div>
+
+                <div class="mt-5 bg-black/50 p-4 rounded-xl border border-white/5">
+                    <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3 text-center"><i class="fa-solid fa-plus-circle text-green-400 mr-1"></i> Sumar Puntos</h3>
+                    <div class="space-y-3 max-h-40 overflow-y-auto no-scrollbar pr-1">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-400 flex-1">Lavar todos los platos (+50)</span>
+                            <div class="flex gap-2">
+                                <button onclick="sumarPuntos('Flor', 50)" class="bg-pink-500/20 text-pink-400 px-3 py-1 rounded-lg border border-pink-500/30 font-bold active:scale-95">F</button>
+                                <button onclick="sumarPuntos('Nahu', 50)" class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-lg border border-blue-500/30 font-bold active:scale-95">N</button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-400 flex-1">Ir al súper solo/a (+80)</span>
+                            <div class="flex gap-2">
+                                <button onclick="sumarPuntos('Flor', 80)" class="bg-pink-500/20 text-pink-400 px-3 py-1 rounded-lg border border-pink-500/30 font-bold active:scale-95">F</button>
+                                <button onclick="sumarPuntos('Nahu', 80)" class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-lg border border-blue-500/30 font-bold active:scale-95">N</button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-400 flex-1">Desayuno en la cama (+100)</span>
+                            <div class="flex gap-2">
+                                <button onclick="sumarPuntos('Flor', 100)" class="bg-pink-500/20 text-pink-400 px-3 py-1 rounded-lg border border-pink-500/30 font-bold active:scale-95">F</button>
+                                <button onclick="sumarPuntos('Nahu', 100)" class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-lg border border-blue-500/30 font-bold active:scale-95">N</button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-400 flex-1">Bancarse un plan aburrido (+150)</span>
+                            <div class="flex gap-2">
+                                <button onclick="sumarPuntos('Flor', 150)" class="bg-pink-500/20 text-pink-400 px-3 py-1 rounded-lg border border-pink-500/30 font-bold active:scale-95">F</button>
+                                <button onclick="sumarPuntos('Nahu', 150)" class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-lg border border-blue-500/30 font-bold active:scale-95">N</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VISTA 2: HOGAR Y FINANZAS ================= -->
+        <div id="view-finance" class="view-section hidden space-y-6">
+            
+            <div class="glass p-5 relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 opacity-5 text-8xl"><i class="fa-solid fa-scale-balanced"></i></div>
+                <div class="flex justify-between items-center mb-4 relative z-10">
+                    <h2 class="text-sm font-bold text-gray-300 uppercase tracking-wider"><i class="fa-solid fa-scale-balanced text-green-400 mr-2"></i>Balance Mensual</h2>
+                    <select id="filtro-mes" class="bg-black/40 border border-white/10 rounded-lg p-1.5 text-xs text-white focus:outline-none focus:border-green-500"></select>
+                </div>
+                
+                <div id="saldo-neto-container" class="bg-black/30 rounded-2xl p-5 border border-white/10 text-center transition-all duration-500 mb-4 shadow-inner relative z-10">
+                    <span id="mes-actual-display" class="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1"></span>
+                    <p id="saldo-neto-info" class="text-2xl font-black text-white drop-shadow-md">Calculando...</p>
+                </div>
+
+                <select id="filtro-deudas" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-sm text-gray-300 focus:outline-none focus:border-green-500 relative z-10 appearance-none text-center font-semibold">
+                    <option value="total">Balance Neto (Total)</option>
+                    <option value="Flor">Deudas de Flor a Nahu</option>
+                    <option value="Nahu">Deudas de Nahu a Flor</option>
+                </select>
+            </div>
+
+            <div class="glass p-5 relative" id="form-content">
+                <h2 class="text-sm font-bold text-gray-300 mb-5 uppercase tracking-wider"><i class="fa-solid fa-receipt text-green-400 mr-2"></i>Registrar Gasto</h2>
+                <form id="transaccion-form" class="space-y-4">
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                            <span class="text-green-400 font-bold text-lg">$</span>
+                        </div>
+                        <input type="text" id="monto" inputmode="numeric" required placeholder="0" class="w-full bg-black/40 border-2 border-transparent focus:border-green-500 rounded-xl py-3 pl-10 pr-4 text-white text-xl font-black outline-none transition-all shadow-inner">
+                        <label class="absolute -top-3 left-3 bg-[#121826] px-2 text-[10px] font-bold text-green-400 uppercase tracking-wider rounded">Monto Total</label>
+                    </div>
+
+                    <div class="relative">
+                        <input type="text" id="descripcion" required placeholder="Ej: Vuelo Bariloche, Supermercado" class="w-full bg-black/40 border border-white/10 focus:border-green-500 rounded-xl py-3 px-4 text-white text-sm outline-none transition-all">
+                        <label class="absolute -top-2.5 left-3 bg-[#121826] px-1.5 text-[10px] font-bold text-gray-400 uppercase rounded">Concepto</label>
+                    </div>
+                    
+                    <div class="relative">
+                        <select id="pagador" required class="w-full bg-black/40 border border-white/10 focus:border-green-500 rounded-xl py-3 px-4 text-white text-sm outline-none appearance-none transition-all">
+                            <option value="Nahu">Lo pagó Nahu</option>
+                            <option value="Flor">Lo pagó Flor</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none"><i class="fa-solid fa-chevron-down text-gray-500"></i></div>
+                        <label class="absolute -top-2.5 left-3 bg-[#121826] px-1.5 text-[10px] font-bold text-gray-400 uppercase rounded">¿Quién pagó?</label>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="checkbox" id="paga100" class="peer sr-only">
+                            <div class="h-full flex items-center justify-center p-3 rounded-xl bg-black/30 border border-white/5 transition-all peer-checked:bg-green-500/20 peer-checked:border-green-500/50">
+                                <span class="text-[11px] font-bold text-gray-400 peer-checked:text-green-400">Individual (100%)</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" id="esCuota" class="peer sr-only">
+                            <div class="h-full flex items-center justify-center p-3 rounded-xl bg-black/30 border border-white/5 transition-all peer-checked:bg-blue-500/20 peer-checked:border-blue-500/50">
+                                <span class="text-[11px] font-bold text-gray-400 peer-checked:text-blue-400">Es a Cuotas</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div id="cuotas-fields" class="hidden bg-black/30 p-4 rounded-xl border border-blue-500/30 transition-all shadow-inner relative">
+                        <div class="relative">
+                            <input type="number" id="cuotasPendientes" min="1" value="1" placeholder="Ej: 3" class="w-full bg-black/40 border border-white/10 focus:border-blue-500 rounded-xl py-3 px-4 text-white text-sm outline-none transition-all">
+                            <label class="absolute -top-2.5 left-3 bg-[#121826] px-1.5 text-[10px] font-bold text-blue-400 uppercase rounded">Cantidad de Cuotas</label>
+                        </div>
+                        <p class="text-[10px] text-gray-500 mt-2 text-center">El gasto se dividirá automáticamente en los próximos meses.</p>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 py-3.5 rounded-xl font-bold text-white shadow-[0_0_15px_rgba(16,185,129,0.3)] active:scale-95 transition">Guardar Gasto</button>
+                </form>
+            </div>
+
+            <div id="animacion-container" class="glass p-5 text-center hidden flex flex-col items-center justify-center min-h-[250px]">
+                <img id="animacion-gif" src="" alt="Gasto registrado" class="w-full max-w-[200px] mx-auto rounded-xl shadow-lg border border-white/10">
+                <p class="text-sm font-bold text-green-400 mt-4"><i class="fa-solid fa-circle-check mr-2"></i>¡Gasto guardado en la nube!</p>
+            </div>
+
+            <div class="glass p-5">
+                <h2 class="text-sm font-bold text-gray-300 mb-4 uppercase tracking-wider"><i class="fa-solid fa-clock-rotate-left text-green-400 mr-2"></i>Historial Filtrado</h2>
+                <ul id="transaccion-list" class="space-y-2 max-h-96 overflow-y-auto no-scrollbar pb-2">
+                    <!-- JS inyectará los gastos aquí -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- ================= VISTA 3: JUEGOS Y RULETAS ================= -->
+        <div id="view-games" class="view-section hidden space-y-6">
+            
+            <!-- Ruleta Planes -->
+            <div class="glass p-5 rounded-2xl relative overflow-hidden border-t-2 border-t-purple-500">
+                <div class="absolute -right-4 -top-4 opacity-5 text-8xl"><i class="fa-solid fa-masks-theater"></i></div>
+                <h2 class="text-sm font-bold text-purple-300 mb-4 uppercase tracking-widest relative z-10"><i class="fa-solid fa-masks-theater mr-2"></i>¿Qué hacemos hoy?</h2>
+                <div class="bg-black/30 p-5 rounded-xl border border-white/5 text-center min-h-[120px] flex flex-col justify-center relative z-10">
+                    <p id="res-plan" class="text-lg font-bold text-white italic">Toca el botón para decidir...</p>
+                </div>
+                <button onclick="girarRuletaPlan()" class="mt-4 w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 py-3 rounded-xl font-bold text-white shadow-[0_0_15px_rgba(147,51,234,0.3)] active:scale-95 transition relative z-10">Elegir Plan</button>
+            </div>
+
+            <!-- Ruleta Comida -->
+            <div class="glass p-5 rounded-2xl relative overflow-hidden border-t-2 border-t-orange-500">
+                <div class="absolute -right-4 -top-4 opacity-5 text-8xl"><i class="fa-solid fa-pizza-slice"></i></div>
+                <h2 class="text-sm font-bold text-orange-300 mb-4 uppercase tracking-widest relative z-10"><i class="fa-solid fa-utensils mr-2"></i>¿Qué comemos?</h2>
+                <div class="bg-black/30 p-5 rounded-xl border border-white/5 text-center min-h-[120px] flex flex-col justify-center relative z-10">
+                    <p id="res-comida" class="text-lg font-bold text-white italic">Se acabó el "lo que quieras"</p>
+                </div>
+                <button onclick="girarRuletaComida()" class="mt-4 w-full bg-gradient-to-r from-orange-600 to-red-500 hover:from-orange-500 hover:to-red-400 py-3 rounded-xl font-bold text-white shadow-[0_0_15px_rgba(234,88,12,0.3)] active:scale-95 transition relative z-10">Elegir Comida</button>
+            </div>
+
+            <!-- ZONA PICANTE (Explicit/Spicy Section) -->
+            <div class="glass-hot p-6 rounded-3xl border-red-500/50 relative overflow-hidden mt-8 shadow-[0_0_30px_rgba(220,38,38,0.15)]">
+                <div class="absolute -right-8 -top-8 opacity-10 text-9xl"><i class="fa-solid fa-fire"></i></div>
+                
+                <div class="flex items-center justify-center mb-6 relative z-10">
+                    <i class="fa-solid fa-fire-flame-curved text-red-500 text-2xl mr-3 heartbeat"></i>
+                    <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-pink-500 uppercase tracking-widest">Zona Picante</h2>
+                    <i class="fa-solid fa-fire-flame-curved text-red-500 text-2xl ml-3 heartbeat"></i>
+                </div>
+
+                <div class="space-y-4 relative z-10">
+                    <div class="bg-black/60 p-6 rounded-2xl border border-red-500/30 text-center shadow-inner min-h-[180px] flex flex-col justify-center">
+                        <div id="resultado-dado">
+                            <h3 class="text-sm font-bold text-red-300 mb-2 tracking-widest uppercase">Dado Extremo</h3>
+                            <p class="text-gray-400 italic text-sm">¿Se animan a tocar el botón?</p>
+                        </div>
+                    </div>
+                    <button onclick="tirarDadosHot()" class="w-full bg-gradient-to-r from-red-700 via-red-600 to-pink-600 hover:from-red-600 hover:via-red-500 hover:to-pink-500 py-4 rounded-2xl font-black text-white text-lg tracking-wider shadow-[0_0_20px_rgba(220,38,38,0.4)] active:scale-95 transition border border-red-400/50">
+                        🔥 TIRAR LOS DADOS 🔥
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VISTA 4: NEGOCIO ================= -->
+        <div id="view-business" class="view-section hidden space-y-6">
+            
+            <!-- Selector Flotante -->
+            <div class="glass p-1.5 flex gap-1.5 justify-center sticky top-2 z-20 mx-auto max-w-[90%] bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl">
+                <button onclick="switchBusinessTab('3d')" id="tab-btn-3d" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold text-sm shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-cube text-lg"></i> 3D
+                </button>
+                <button onclick="switchBusinessTab('tech')" id="tab-btn-tech" class="flex-1 py-2.5 rounded-xl text-gray-400 font-bold text-sm hover:bg-white/5 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-apple text-lg"></i> Appilar
+                </button>
+            </div>
+
+            <!-- SUB-SECCIÓN: 3D PRINTING -->
+            <div id="section-3d" class="space-y-6 animate-fade-in">
+                <div class="glass p-6 relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 opacity-5 text-8xl"><i class="fa-solid fa-layer-group"></i></div>
+                    <h2 class="text-sm font-bold text-white mb-5 uppercase tracking-widest flex items-center relative z-10"><i class="fa-solid fa-calculator text-blue-400 mr-2 text-lg"></i>Calculadora 3D</h2>
+                    
+                    <div class="space-y-5 relative z-10">
+                        <div class="bg-black/20 p-4 rounded-2xl border border-white/5 shadow-inner">
+                            <h3 class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-3">Ajustes de Material</h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="relative">
+                                    <select id="calc-material" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-blue-500 appearance-none transition">
+                                        <option value="PLA">Filamento PLA</option>
+                                        <option value="PETG">PETG / ABS</option>
+                                        <option value="TPU">Flex (TPU)</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none"><i class="fa-solid fa-chevron-down text-gray-500 text-[10px]"></i></div>
+                                </div>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"><span class="text-blue-400 font-bold text-xs">$</span></div>
+                                    <input type="number" id="calc-precio-kg" value="23500" oninput="calcularPrecios3D()" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-7 pr-3 text-white text-xs font-bold focus:outline-none focus:border-blue-500 transition-all text-right">
+                                    <label class="absolute -top-2 left-3 bg-[#121826] px-1 text-[9px] text-gray-400 font-bold rounded">Precio x KG</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="fa-solid fa-weight-hanging text-gray-500 group-focus-within:text-blue-400 transition-colors"></i>
+                                </div>
+                                <input type="number" id="calc-gramos" oninput="calcularPrecios3D()" placeholder="0" class="w-full bg-black/30 border border-white/10 rounded-xl py-3 pl-10 pr-8 text-white text-lg font-bold focus:outline-none focus:border-blue-500 transition-all">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"><span class="text-xs text-gray-500 font-bold">gr</span></div>
+                                <label class="absolute -top-2.5 left-3 bg-[#121826] px-1.5 text-[10px] text-gray-400 font-bold rounded">Gramos</label>
+                            </div>
+                            
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="fa-solid fa-clock text-gray-500 group-focus-within:text-blue-400 transition-colors"></i>
+                                </div>
+                                <input type="number" id="calc-horas" step="0.1" oninput="calcularPrecios3D()" placeholder="0" class="w-full bg-black/30 border border-white/10 rounded-xl py-3 pl-10 pr-8 text-white text-lg font-bold focus:outline-none focus:border-blue-500 transition-all">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"><span class="text-xs text-gray-500 font-bold">hs</span></div>
+                                <label class="absolute -top-2.5 left-3 bg-[#121826] px-1.5 text-[10px] text-gray-400 font-bold rounded">Tiempo</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="glass p-4 border border-white/5 flex justify-between items-center rounded-2xl">
+                        <span class="text-xs text-gray-400 font-bold"><i class="fa-solid fa-file-invoice-dollar mr-2"></i>Costo Final (Base + 25%)</span>
+                        <span id="res-costo-final" class="text-base font-black text-white">$0</span>
+                    </div>
+                    <div class="bg-gradient-to-r from-blue-900/40 to-black/40 p-4 rounded-2xl border border-blue-500/20 flex justify-between items-center shadow-[0_0_15px_rgba(59,130,246,0.1)]">
+                        <span class="text-xs text-blue-300 font-bold uppercase tracking-wider">Precio Conocidos (x1.5)</span>
+                        <span id="res-precio-amigo" class="text-lg font-black text-white">$0</span>
+                    </div>
+                    <div class="bg-gradient-to-r from-purple-900/40 to-black/40 p-4 rounded-2xl border border-purple-500/20 flex justify-between items-center shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+                        <span class="text-xs text-purple-300 font-bold uppercase tracking-wider">TiendaNube Oficial</span>
+                        <span id="res-precio-nube" class="text-lg font-black text-white">$0</span>
+                    </div>
+                    <div class="bg-gradient-to-r from-yellow-900/40 to-black/40 p-4 rounded-2xl border border-yellow-500/30 flex justify-between items-center relative overflow-hidden shadow-[0_0_15px_rgba(234,179,8,0.15)]">
+                        <div class="absolute top-0 right-0 w-16 h-full bg-yellow-500/10 skew-x-12 transform -translate-x-4"></div>
+                        <span class="text-xs text-yellow-400 font-bold uppercase tracking-wider z-10">Mercado Libre (+20%)</span>
+                        <span id="res-precio-ml" class="text-xl font-black text-white z-10">$0</span>
+                    </div>
+                    <div id="alerta-ml-combo" class="hidden animate-pulse">
+                        <p class="text-[10px] text-yellow-400 bg-yellow-900/30 p-2.5 rounded-xl border border-yellow-500/30 text-center font-bold">⚠️ Precio menor a $20.000. ¡Armar Combo x2 obligatorio!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-SECCIÓN: APPILAR STORE (TECH) -->
+            <div id="section-tech" class="hidden space-y-6 animate-fade-in">
+                <div class="glass p-5 pb-0 border-t-2 border-t-emerald-500 rounded-t-3xl">
+                    <div class="flex items-center justify-between bg-black/40 p-3 rounded-2xl border border-white/10 mb-5 shadow-inner">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-money-bill-transfer text-emerald-400 text-lg"></i>
+                            <span class="text-xs font-bold text-gray-300 uppercase tracking-widest">Cotización USDT</span>
+                        </div>
+                        <div class="flex items-center bg-emerald-950/50 px-3 py-1.5 rounded-xl border border-emerald-500/30">
+                            <span class="text-emerald-400 font-bold text-sm mr-1">$</span>
+                            <input type="number" id="appilar-usdt" value="1250" oninput="calcularAppilarML()" class="w-16 bg-transparent text-emerald-400 font-bold outline-none text-sm text-right">
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mb-5">
+                        <button onclick="switchAppilarTab('ml')" id="btn-appilar-ml" class="flex-1 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 font-bold text-[11px] uppercase tracking-wider border border-emerald-500/30 transition-all shadow-[0_0_10px_rgba(16,185,129,0.2)]">📦 Mercado Libre</button>
+                        <button onclick="switchAppilarTab('wa')" id="btn-appilar-wa" class="flex-1 py-2 rounded-xl bg-black/30 text-gray-400 font-bold text-[11px] uppercase tracking-wider border border-white/5 hover:bg-white/5 transition-all">💬 WhatsApp</button>
+                    </div>
+                </div>
+
+                <!-- TECH: MERCADO LIBRE -->
+                <div id="appilar-view-ml" class="space-y-4">
+                    <div class="glass p-5">
+                        <div class="relative group mb-6">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none"><span class="text-emerald-400 font-bold text-lg">U$D</span></div>
+                            <input type="number" id="appilar-costo-usd" oninput="calcularAppilarML()" placeholder="0.00" class="w-full bg-black/40 border-2 border-transparent focus:border-emerald-500 rounded-2xl py-4 pl-14 pr-4 text-white text-2xl font-black outline-none transition-all shadow-inner">
+                            <label class="absolute -top-3 left-4 bg-[#121826] px-2 text-[10px] font-bold text-emerald-400 uppercase tracking-wider rounded">Costo del Producto</label>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            <label class="cursor-pointer">
+                                <input type="checkbox" id="appilar-tarjeta" checked onchange="calcularAppilarML()" class="peer sr-only">
+                                <div class="h-full flex flex-col items-center justify-center p-3 rounded-xl bg-black/30 border border-white/5 transition-all peer-checked:bg-emerald-500/20 peer-checked:border-emerald-500/50 peer-checked:shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+                                    <i class="fa-regular fa-credit-card text-gray-500 peer-checked:text-emerald-400 mb-1 text-lg transition-colors"></i>
+                                    <span class="text-[10px] font-bold text-gray-400 peer-checked:text-emerald-300">Tarjeta (7%)</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" id="appilar-novia" onchange="calcularAppilarML()" class="peer sr-only">
+                                <div class="h-full flex flex-col items-center justify-center p-3 rounded-xl bg-black/30 border border-white/5 transition-all peer-checked:bg-pink-500/20 peer-checked:border-pink-500/50 peer-checked:shadow-[0_0_15px_rgba(236,72,153,0.15)]">
+                                    <i class="fa-solid fa-heart text-gray-500 peer-checked:text-pink-400 mb-1 text-lg transition-colors"></i>
+                                    <span class="text-[10px] font-bold text-gray-400 peer-checked:text-pink-300">Socia (14%)</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" id="appilar-sirtac" onchange="calcularAppilarML()" class="peer sr-only">
+                                <div class="h-full flex flex-col items-center justify-center p-3 rounded-xl bg-black/30 border border-white/5 transition-all peer-checked:bg-blue-500/20 peer-checked:border-blue-500/50 peer-checked:shadow-[0_0_15px_rgba(59,130,246,0.15)]">
+                                    <i class="fa-solid fa-file-invoice-dollar text-gray-500 peer-checked:text-blue-400 mb-1 text-lg transition-colors"></i>
+                                    <span class="text-[10px] font-bold text-gray-400 peer-checked:text-blue-300">SIRTAC 1.5%</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" id="appilar-envioml" onchange="calcularAppilarML()" class="peer sr-only">
+                                <div class="h-full flex flex-col items-center justify-center p-3 rounded-xl bg-black/30 border border-white/5 transition-all peer-checked:bg-yellow-500/20 peer-checked:border-yellow-500/50 peer-checked:shadow-[0_0_15px_rgba(234,179,8,0.15)]">
+                                    <i class="fa-solid fa-truck-fast text-gray-500 peer-checked:text-yellow-400 mb-1 text-lg transition-colors"></i>
+                                    <span class="text-[10px] font-bold text-gray-400 peer-checked:text-yellow-300">Envío $12k</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="relative">
+                            <label class="absolute -top-2.5 left-3 bg-[#121826] px-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider rounded z-10">Modalidad de Venta ML</label>
+                            <select id="appilar-cuotas" onchange="calcularAppilarML()" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 pt-4 text-sm text-white font-bold focus:outline-none focus:border-emerald-500 appearance-none relative z-0">
+                                <option value="0">Contado (0%)</option>
+                                <option value="5">3 a 12 Bajo (5%)</option>
+                                <option value="8.4">3 Sin Interés (8.4%)</option>
+                                <option value="12.3">6 Sin Interés (12.3%)</option>
+                                <option value="19.2">12 Sin Interés (19.2%)</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none z-10"><i class="fa-solid fa-chevron-down text-gray-500"></i></div>
+                        </div>
+                    </div>
+
+                    <div id="appilar-ml-resultados" class="glass hidden overflow-hidden rounded-2xl border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                        <div class="bg-gradient-to-br from-emerald-900/60 to-black/60 p-6 text-center border-b border-white/5 relative">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl"></div>
+                            <p class="text-[10px] text-emerald-300 font-bold uppercase tracking-widest mb-1 relative z-10">Precio a Publicar (ML)</p>
+                            <h3 id="appilar-res-publicar" class="text-4xl font-black text-white tracking-tight drop-shadow-lg relative z-10">$0</h3>
+                        </div>
+                        <div class="p-5 bg-black/20">
+                            <div id="appilar-ml-desglose" class="space-y-2 mb-5 text-xs font-medium text-gray-400"></div>
+                            <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-center shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                                <p class="text-emerald-400 text-[10px] uppercase font-bold tracking-wider mb-1">Tu Ganancia Neta Limpia</p>
+                                <p id="appilar-res-ganancia" class="text-2xl font-black text-white drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">$0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TECH: WHATSAPP -->
+                <div id="appilar-view-wa" class="hidden space-y-4">
+                    <div class="glass p-5 rounded-2xl">
+                        <h2 class="text-sm font-bold text-white mb-4 uppercase tracking-widest"><i class="fa-brands fa-whatsapp text-green-400 mr-2 text-lg"></i>Respuesta Rápida</h2>
+                        <div class="grid grid-cols-2 gap-4 mb-5">
+                            <div class="relative">
+                                <label class="absolute -top-2.5 left-2 bg-[#121826] px-1.5 text-[10px] font-bold text-gray-400 uppercase rounded">Modelo</label>
+                                <input type="text" id="wa-modelo" oninput="generarRespuestaWA()" placeholder="iPhone 15 Pro..." class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-green-500 transition-colors">
+                            </div>
+                            <div class="relative">
+                                <label class="absolute -top-2.5 left-2 bg-[#121826] px-1.5 text-[10px] font-bold text-green-400 uppercase rounded">Costo U$D</label>
+                                <input type="number" id="wa-costo" oninput="generarRespuestaWA()" placeholder="0" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-sm font-bold text-green-400 focus:outline-none focus:border-green-500 transition-colors">
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <label class="absolute -top-2.5 left-3 bg-[#121826] px-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider rounded">Mensaje (Copiar)</label>
+                            <textarea id="wa-resultado" readonly class="w-full h-44 bg-black/30 border border-white/5 rounded-xl p-3 pt-4 text-[11px] text-gray-300 font-mono resize-none focus:outline-none"></textarea>
+                        </div>
+                    </div>
+                    <div class="glass p-5 rounded-2xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-sm font-bold text-white uppercase tracking-widest"><i class="fa-solid fa-wand-magic-sparkles text-blue-400 mr-2"></i>Procesar Lista</h2>
+                            <span id="wa-ganancia-lista" class="hidden bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-[10px] font-bold border border-green-500/30"></span>
+                        </div>
+                        <div class="relative mb-4">
+                            <label class="absolute -top-2.5 left-3 bg-[#121826] px-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider rounded">Lista Cruda Proveedor</label>
+                            <textarea id="wa-lista-cruda" oninput="procesarListaWA()" placeholder="Pega la lista desordenada aquí..." class="w-full h-32 bg-black/40 border border-white/10 rounded-xl p-3 pt-4 text-[11px] text-gray-400 font-mono resize-none focus:outline-none focus:border-blue-500 transition-colors"></textarea>
+                        </div>
+                        <div class="relative">
+                            <label class="absolute -top-2.5 left-3 bg-[#121826] px-2 text-[10px] font-bold text-blue-400 uppercase tracking-wider rounded">Lista Appilar Store</label>
+                            <textarea id="wa-lista-procesada" readonly class="w-full h-40 bg-blue-900/10 border border-blue-500/20 rounded-xl p-3 pt-4 text-[11px] text-blue-200 font-mono resize-none focus:outline-none shadow-inner"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- NAVEGACIÓN INFERIOR -->
+    <nav class="fixed bottom-0 left-0 right-0 w-full bg-[#0f172a]/95 backdrop-blur-md border-t border-white/10 z-50 pb-safe">
+        <div class="max-w-md mx-auto flex justify-between px-6 py-3 text-[10px] font-bold text-gray-400">
+            <div onclick="switchView('home')" id="nav-home" class="flex flex-col items-center text-pink-400 transition cursor-pointer">
+                <i class="fa-solid fa-house mb-1 text-lg"></i>Inicio
+            </div>
+            <div onclick="switchView('finance')" id="nav-finance" class="flex flex-col items-center hover:text-white transition cursor-pointer">
+                <i class="fa-solid fa-wallet mb-1 text-lg"></i>Finanzas
+            </div>
+            <div onclick="switchView('games')" id="nav-games" class="flex flex-col items-center hover:text-white transition cursor-pointer">
+                <i class="fa-solid fa-gamepad mb-1 text-lg"></i>Juegos
+            </div>
+            <div onclick="switchView('business')" id="nav-business" class="flex flex-col items-center hover:text-white transition cursor-pointer">
+                <i class="fa-solid fa-briefcase mb-1 text-lg"></i>Negocio
+            </div>
+        </div>
+    </nav>
+
+    <!-- Modal Base (Para Tienda, Detalles, Alertas) -->
+    <div id="modal-base" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity">
+        <div id="modal-content" class="bg-gradient-to-b from-[#1e1b4b] to-[#0f172a] border border-white/10 w-full max-w-sm rounded-3xl shadow-2xl p-6 transform scale-95 transition-transform relative">
+            <button onclick="cerrarModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        // === LÓGICA DE NAVEGACIÓN ===
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`view-${viewId}`).classList.remove('hidden');
+            
+            document.querySelectorAll('nav div').forEach(el => {
+                el.className = 'flex flex-col items-center hover:text-white transition cursor-pointer text-gray-400';
+            });
+            const activeNav = document.getElementById(`nav-${viewId}`);
+            if(viewId === 'home') activeNav.classList.add('text-pink-400');
+            if(viewId === 'finance') activeNav.classList.add('text-green-400');
+            if(viewId === 'games') activeNav.classList.add('text-purple-400');
+            if(viewId === 'business') activeNav.classList.add('text-blue-400');
+            activeNav.classList.remove('text-gray-400');
+            window.scrollTo(0,0);
+        }
+
+        // === PASTILLERO ===
+        function tomarPastilla(id) {
+            const btn = document.getElementById(`btn-pastilla-${id}`);
+            btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> Tomada`;
+            btn.className = "w-full bg-green-500/20 border border-green-500/50 text-xs py-2 rounded-lg text-green-300 font-bold transition cursor-default shadow-[0_0_10px_rgba(34,197,94,0.2)]";
+        }
+
+        // === MERCADO DE FAVORES ===
+        let puntos = { Flor: 1250, Nahu: 840 };
+        const recompensas = [
+            { nombre: "Masaje de 20 min", costo: 200, icono: "fa-hands" },
+            { nombre: "Elegir peli sin discutir", costo: 150, icono: "fa-film" },
+            { nombre: "Tener la razón automáticamente", costo: 500, icono: "fa-crown" },
+            { nombre: "Desayuno en la cama", costo: 300, icono: "fa-mug-hot" }
+        ];
+
+        function actualizarPuntosUI() {
+            document.getElementById('pts-flor').innerText = puntos.Flor.toLocaleString();
+            document.getElementById('pts-nahu').innerText = puntos.Nahu.toLocaleString();
+        }
+
+        function sumarPuntos(quien, cantidad) {
+            puntos[quien] += cantidad;
+            actualizarPuntosUI();
+            mostrarAlerta(`¡${quien} ganó ${cantidad} puntos!`, "success");
+        }
+
+        function abrirTienda(quien) {
+            let html = `
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-bold text-white mb-1"><i class="fa-solid fa-store text-yellow-400 mr-2"></i>Tienda de ${quien}</h2>
+                    <p class="text-sm text-gray-400">Tienes <span class="font-bold text-${quien==='Flor'?'pink':'blue'}-400">${puntos[quien]} pts</span></p>
+                </div>
+                <div class="space-y-3">
+            `;
+            recompensas.forEach((r, index) => {
+                const puedeComprar = puntos[quien] >= r.costo;
+                const btnClass = puedeComprar 
+                    ? `bg-white/10 text-white hover:bg-${quien==='Flor'?'pink':'blue'}-500 hover:border-transparent` 
+                    : `bg-black/40 text-gray-500 cursor-not-allowed border-transparent`;
+                html += `
+                    <div class="flex justify-between items-center bg-black/30 p-3 rounded-xl border border-white/5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-300"><i class="fa-solid ${r.icono}"></i></div>
+                            <span class="text-xs font-bold text-gray-200">${r.nombre}</span>
+                        </div>
+                        <button ${!puedeComprar ? 'disabled' : ''} onclick="comprarRecompensa('${quien}', ${index})" class="${btnClass} border border-white/10 px-3 py-1.5 rounded-lg text-xs font-bold transition">
+                            ${r.costo} pts
+                        </button>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            mostrarModal(html);
+        }
+
+        function comprarRecompensa(quien, index) {
+            const r = recompensas[index];
+            if(puntos[quien] >= r.costo) {
+                puntos[quien] -= r.costo;
+                actualizarPuntosUI();
+                cerrarModal();
+                mostrarAlerta(`¡Canjeaste: ${r.nombre}! 🎉`, "success");
+            }
+        }
+
+        // === MODALES ===
+        const modalBase = document.getElementById('modal-base');
+        const modalContent = document.getElementById('modal-content');
+        
+        function mostrarModal(html) {
+            document.getElementById('modal-body').innerHTML = html;
+            modalBase.classList.remove('hidden');
+            setTimeout(() => {
+                modalBase.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function cerrarModal() {
+            modalBase.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => { modalBase.classList.add('hidden'); }, 300);
+        }
+
+        function mostrarAlerta(msg, type="info") {
+            const icon = type === "success" ? '<i class="fa-solid fa-check text-green-400 mr-2"></i>' : '<i class="fa-solid fa-circle-info text-blue-400 mr-2"></i>';
+            mostrarModal(`<div class="text-center py-4"><p class="text-lg font-bold text-white">${icon}${msg}</p></div>`);
+            setTimeout(cerrarModal, 2000);
+        }
+
+        // === RULETAS Y JUEGOS ===
+        function girarRuletaPlan() {
+            const planes = ["Noche de Pelis y Helado", "Masajes mutuos (30 min c/u)", "Cocinar juntos", "Salir a tomar algo", "Quedarse en la cama viendo TikToks", "Jugar Tutti Frutti Hot", "Ducha juntos", "Cena Romántica en casa"];
+            const p = document.getElementById('res-plan');
+            p.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-2xl text-purple-400"></i>';
+            setTimeout(() => {
+                p.innerHTML = `<span class="text-white text-xl">${planes[Math.floor(Math.random() * planes.length)]}</span>`;
+            }, 1000);
+        }
+
+        function girarRuletaComida() {
+            const comidas = ["Hamburguesas 🍔", "Sushi 🍣", "Pizza 🍕", "Asado / Parrilla 🥩", "Pastas 🍝", "Empanadas 🥟", "Milanesas con fritas 🍟", "Picada 🧀"];
+            const p = document.getElementById('res-comida');
+            p.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-2xl text-orange-400"></i>';
+            setTimeout(() => {
+                p.innerHTML = `<span class="text-white text-xl">${comidas[Math.floor(Math.random() * comidas.length)]}</span>`;
+            }, 1000);
+        }
+
+        function tirarDadosHot() {
+            const acciones = [
+                {a: "Sexo oral profundo", r: "No podés usar las manos", t: "hasta que te lo pida por favor"},
+                {a: "Misionero clásico pero intenso", r: "Mirándose a los ojos sin desviar la mirada", t: "durante 10 minutos sin parar"},
+                {a: "Chupar y estimular los pechos", r: "Mientras la otra persona tiene los ojos vendados", t: "por 5 minutos reloj"},
+                {a: "Masaje erótico de cuerpo entero", r: "Usando mucho aceite y terminando en la entrepierna", t: "hasta que no aguante más"},
+                {a: "Perrito salvaje", r: "Con nalgadas suaves", t: "hasta cambiar de pose"},
+                {a: "Besos y lamidas en el cuello/orejas", r: "Susurrando cosas muy sucias", t: "por 3 minutos antes de bajar"},
+                {a: "Tijeras / Frotarse", r: "Sin penetración, solo fricción pura", t: "hasta que alguno acabe"}
+            ];
+            
+            const rand = acciones[Math.floor(Math.random() * acciones.length)];
+            const div = document.getElementById('resultado-dado');
+            
+            div.innerHTML = '<i class="fa-solid fa-fire fa-beat text-4xl text-red-500 my-4"></i>';
+            
+            setTimeout(() => {
+                div.innerHTML = `
+                    <div class="bg-red-500/10 border border-red-500/30 p-3 rounded-xl mb-3 shadow-[0_0_15px_rgba(220,38,38,0.2)]">
+                        <span class="block text-[10px] text-red-300 font-bold uppercase tracking-widest mb-1">🔥 Acción Obligatoria</span>
+                        <span class="text-lg font-black text-white leading-tight">${rand.a}</span>
+                    </div>
+                    <div class="bg-orange-500/10 border border-orange-500/30 p-2 rounded-xl mb-3">
+                        <span class="block text-[10px] text-orange-300 font-bold uppercase tracking-widest mb-1">⏱️ Tiempo</span>
+                        <span class="text-sm font-bold text-white">${rand.t}</span>
+                    </div>
+                    <div class="bg-pink-500/10 border border-pink-500/30 p-2 rounded-xl">
+                        <span class="block text-[10px] text-pink-300 font-bold uppercase tracking-widest mb-1">⚠️ Regla Extra</span>
+                        <span class="text-xs font-medium text-gray-300">${rand.r}</span>
+                    </div>
+                `;
+            }, 1200);
+        }
+
+        // === NEGOCIO: TABS Y CALCULADORAS ===
+        function switchBusinessTab(tab) {
+            const btn3d = document.getElementById('tab-btn-3d');
+            const btnTech = document.getElementById('tab-btn-tech');
+            const sec3d = document.getElementById('section-3d');
+            const secTech = document.getElementById('section-tech');
+            const cActive = "flex-1 py-2.5 rounded-xl text-white font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(59,130,246,0.4)]";
+            const cInactive = "flex-1 py-2.5 rounded-xl text-gray-400 font-bold text-sm hover:bg-white/5 transition-all flex items-center justify-center gap-2 bg-transparent";
+            
+            if(tab === '3d') {
+                btn3d.className = cActive + " bg-gradient-to-r from-blue-600 to-blue-500";
+                btnTech.className = cInactive;
+                sec3d.classList.remove('hidden');
+                secTech.classList.add('hidden');
+            } else {
+                btnTech.className = cActive + " bg-gradient-to-r from-emerald-600 to-emerald-500 !shadow-[0_0_15px_rgba(16,185,129,0.4)]";
+                btn3d.className = cInactive;
+                secTech.classList.remove('hidden');
+                sec3d.classList.add('hidden');
+            }
+        }
+
+        function switchAppilarTab(tab) {
+            const btnML = document.getElementById('btn-appilar-ml');
+            const btnWA = document.getElementById('btn-appilar-wa');
+            const viewML = document.getElementById('appilar-view-ml');
+            const viewWA = document.getElementById('appilar-view-wa');
+            const cActive = "flex-1 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 font-bold text-[11px] uppercase tracking-wider border border-emerald-500/30 transition-all shadow-[0_0_10px_rgba(16,185,129,0.2)]";
+            const cInactive = "flex-1 py-2 rounded-xl bg-black/30 text-gray-400 font-bold text-[11px] uppercase tracking-wider border border-white/5 hover:bg-white/5 transition-all";
+
+            if (tab === 'ml') {
+                btnML.className = cActive; btnWA.className = cInactive;
+                viewML.classList.remove('hidden'); viewWA.classList.add('hidden');
+            } else {
+                btnWA.className = cActive; btnML.className = cInactive;
+                viewWA.classList.remove('hidden'); viewML.classList.add('hidden');
+            }
+        }
+
+        // Calculadora 3D
+        function calcularPrecios3D() {
+            const gramos = parseFloat(document.getElementById('calc-gramos').value) || 0;
+            const horas = parseFloat(document.getElementById('calc-horas').value) || 0;
+            const precioKg = parseFloat(document.getElementById('calc-precio-kg').value) || 23500;
+
+            if(gramos === 0 && horas === 0) {
+                document.getElementById('res-costo-final').innerText = "$0";
+                document.getElementById('res-precio-amigo').innerText = "$0";
+                document.getElementById('res-precio-nube').innerText = "$0";
+                document.getElementById('res-precio-ml').innerText = "$0";
+                document.getElementById('alerta-ml-combo').classList.add('hidden');
+                return;
+            }
+
+            const costoMaterial = gramos * (precioKg / 1000);
+            const costoMaquina = horas * 200;
+            const costoBase = costoMaterial + costoMaquina;
+            const costoFinal = costoBase * 1.25; 
+
+            const precioAmigo = costoFinal * 1.5;
+            const precioNubeMin = costoFinal * 2;
+            const precioNubeMax = costoFinal * 2.5;
+            const precioML = precioNubeMin * 1.20;
+
+            const fmt = (num) => "$" + Math.round(num).toLocaleString('es-AR');
+
+            document.getElementById('res-costo-final').innerText = fmt(costoFinal);
+            document.getElementById('res-precio-amigo').innerText = fmt(precioAmigo);
+            document.getElementById('res-precio-nube').innerText = `${fmt(precioNubeMin)} a ${fmt(precioNubeMax)}`;
+            document.getElementById('res-precio-ml').innerText = fmt(precioML);
+
+            if(precioML > 0 && precioML < 20000) document.getElementById('alerta-ml-combo').classList.remove('hidden');
+            else document.getElementById('alerta-ml-combo').classList.add('hidden');
+        }
+
+        // Calculadora Appilar
+        function calcularAppilarML() {
+            const usd = parseFloat(document.getElementById('appilar-costo-usd').value) || 0;
+            const usdtRate = parseFloat(document.getElementById('appilar-usdt').value) || 1250;
+            const usoTarjeta = document.getElementById('appilar-tarjeta').checked;
+            const envioSocio = document.getElementById('appilar-novia').checked;
+            const sirtac = document.getElementById('appilar-sirtac').checked;
+            const envioML = document.getElementById('appilar-envioml').checked;
+            const cuotas = parseFloat(document.getElementById('appilar-cuotas').value) || 0;
+            const mlFee = 12.5; 
+
+            const resultContainer = document.getElementById('appilar-ml-resultados');
+            const desgloseContainer = document.getElementById('appilar-ml-desglose');
+
+            if (usd <= 0) { resultContainer.classList.add('hidden'); return; }
+
+            const costoBaseARS = usd * usdtRate;
+            const costoTarjeta = usoTarjeta ? costoBaseARS * 0.07 : 0;
+            const costoEnvioFijo = envioML ? 12000 : 0;
+            const totalFijos = costoBaseARS + costoTarjeta + costoEnvioFijo;
+
+            let gananciaNeta = usd < 1000 ? 150000 : (usd >= 1400 ? 300000 : (usd >= 1200 ? 220000 : 200000));
+            const gananciaBruta = envioSocio ? (gananciaNeta / (1 - 0.14)) : gananciaNeta;
+            
+            let totalPorcentajes = (mlFee / 100) + (cuotas / 100) + (sirtac ? 0.015 : 0);
+            let precioCalculado = (totalFijos + gananciaBruta) / (1 - totalPorcentajes);
+
+            if (precioCalculado > 600000) {
+                totalPorcentajes += 0.07;
+                precioCalculado = (totalFijos + gananciaBruta) / (1 - totalPorcentajes);
+            }
+
+            const multiplo = 50000;
+            let precioPsicologico = Math.ceil(precioCalculado / multiplo) * multiplo - 1;
+            
+            const comisionMLReal = precioPsicologico * (mlFee / 100);
+            const cuotasReal = precioPsicologico * (cuotas / 100);
+            const sirtacReal = sirtac ? precioPsicologico * 0.015 : 0;
+            const afipReal = precioPsicologico > 600000 ? precioPsicologico * 0.07 : 0;
+            
+            const gananciaRealBruta = precioPsicologico - costoBaseARS - costoTarjeta - costoEnvioFijo - comisionMLReal - cuotasReal - sirtacReal - afipReal;
+            const pagoNoviaReal = envioSocio ? (gananciaRealBruta * 0.14) : 0;
+            const gananciaRealNeta = gananciaRealBruta - pagoNoviaReal;
+
+            const fmt = (num) => "$" + Math.round(num).toLocaleString('es-AR');
+
+            document.getElementById('appilar-res-publicar').innerText = fmt(precioPsicologico);
+            document.getElementById('appilar-res-ganancia').innerText = fmt(gananciaRealNeta);
+
+            let htmlDesglose = `<div class="flex justify-between"><span>Costo Base:</span><span class="text-white">${fmt(costoBaseARS)}</span></div>`;
+            if(costoTarjeta > 0) htmlDesglose += `<div class="flex justify-between"><span>Tarjeta (7%):</span><span class="text-red-400">-${fmt(costoTarjeta)}</span></div>`;
+            if(costoEnvioFijo > 0) htmlDesglose += `<div class="flex justify-between"><span>Envío ML:</span><span class="text-red-400">-${fmt(costoEnvioFijo)}</span></div>`;
+            htmlDesglose += `<div class="flex justify-between"><span>Comisión ML (${mlFee}%):</span><span class="text-red-400">-${fmt(comisionMLReal)}</span></div>`;
+            if(cuotasReal > 0) htmlDesglose += `<div class="flex justify-between"><span>Financiero ML:</span><span class="text-red-400">-${fmt(cuotasReal)}</span></div>`;
+            if(afipReal > 0) htmlDesglose += `<div class="flex justify-between font-bold"><span>Retención AFIP:</span><span class="text-red-400">-${fmt(afipReal)}</span></div>`;
+            if(pagoNoviaReal > 0) htmlDesglose += `<div class="flex justify-between font-bold"><span>Socia (14% Gan):</span><span class="text-blue-400">-${fmt(pagoNoviaReal)}</span></div>`;
+
+            desgloseContainer.innerHTML = htmlDesglose;
+            resultContainer.classList.remove('hidden');
+        }
+
+        function calcularGananciaAppilarUSD(costo) {
+            if (costo < 500) return 70;
+            if (costo >= 500 && costo < 900) return 90;
+            if (costo >= 900 && costo < 1200) return 110;
+            if (costo >= 1200 && costo < 1500) return 150;
+            if (costo >= 1500 && costo < 2000) return 200;
+            if (costo >= 2000) return 300;
+            return 0;
+        }
+
+        function generarRespuestaWA() {
+            const modelo = document.getElementById('wa-modelo').value;
+            const costo = parseFloat(document.getElementById('wa-costo').value);
+            const ta = document.getElementById('wa-resultado');
+            if (!modelo || isNaN(costo) || costo <= 0) { ta.value = "Ingresá el modelo y el costo."; return; }
+            const final = costo + calcularGananciaAppilarUSD(costo);
+            ta.value = `¡Hola! 👋 Cotización:\n\n📱 *${modelo}*\n💎 *Precio Final:* U$D ${final}\n\n✨ *Incluye:*\n• Garantía oficial Apple.\n• Traspaso de datos GRATIS.\n\n📍 *Entrega:* En 24hs en Zona Pilar (entorno seguro).\n💵 *Pagos:* Efectivo, USDT o Transferencia.\n\n¿Te reservamos uno? 🚀`;
+        }
+
+        function procesarListaWA() {
+            const cruda = document.getElementById('wa-lista-cruda').value;
+            const proc = document.getElementById('wa-lista-procesada');
+            const badge = document.getElementById('wa-ganancia-lista');
+            if (cruda.trim() === "") { proc.value = ""; badge.classList.add('hidden'); return; }
+
+            let total = 0;
+            const procesado = cruda.split('\n').map(linea => {
+                const match = linea.match(/(.*?)(\b\d{3,4}\b)(.*)/);
+                if (match) {
+                    const costo = parseInt(match[2], 10);
+                    if (costo >= 100) {
+                        const gan = calcularGananciaAppilarUSD(costo);
+                        total += gan;
+                        return `📱 ${match[1].trim()} U$D ${costo + gan} ${match[3].trim()}`.trim();
+                    }
+                }
+                return linea;
+            });
+            proc.value = procesado.join('\n');
+            if(total > 0) { badge.innerText = `Ganancia: U$D ${total}`; badge.classList.remove('hidden'); }
+            else badge.classList.add('hidden');
+        }
+
+        // === FIREBASE: GASTOS ===
+        const firebaseConfig = {
+            apiKey: "AIzaSyAY7CTfzbNy7l5f7nG3xrscrB-D-ehjW4Y",
+            authDomain: "gastos-flor-nahu.firebaseapp.com",
+            projectId: "gastos-flor-nahu"
+        };
+        
+        let db, COLLECTION_NAME = "transacciones_flornahu", transacciones = []; 
+        const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+
+        function initGastos() {
+            try {
+                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                document.getElementById('monto').addEventListener('input', function() {
+                    let val = this.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+                    this.value = val ? Math.round(val).toLocaleString('es-AR') : '';
+                });
+                document.getElementById('esCuota').addEventListener('change', function() {
+                    document.getElementById('cuotas-fields').style.display = this.checked ? 'block' : 'none';
+                    document.getElementById('cuotasPendientes').required = this.checked;
+                });
+                document.getElementById('transaccion-form').addEventListener('submit', handleFormSubmit);
+                document.getElementById('transaccion-list').addEventListener('click', e => {
+                    const btn = e.target.closest('.btn-delete');
+                    if(btn) borrarTransaccion(btn.getAttribute('data-id'));
+                });
+                document.getElementById('filtro-deudas').addEventListener('change', renderizarTransacciones);
+                document.getElementById('filtro-mes').addEventListener('change', renderizarTransacciones);
+                cargarTransacciones();
+            } catch(e) { console.error("Firebase no cargó:", e); }
+        }
+
+        async function cargarTransacciones() {
+            if(!db) return;
+            const snapshot = await db.collection(COLLECTION_NAME).orderBy('fecha', 'desc').get();
+            transacciones = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+            renderizarTransacciones(); 
+        }
+
+        async function borrarTransaccion(id) {
+            if(confirm("¿Borrar gasto?")) {
+                await db.collection(COLLECTION_NAME).doc(id).delete();
+                cargarTransacciones();
+            }
+        }
+
+        function renderizarTransacciones() {
+            // Simplificado para la vista unificada. La lógica pesada de Firebase sigue aquí.
+            const list = document.getElementById('transaccion-list');
+            list.innerHTML = '';
+            
+            // Render filter options based on available months...
+            const mesSelect = document.getElementById('filtro-mes');
+            if(mesSelect.options.length === 0) {
+                const now = new Date();
+                mesSelect.innerHTML = `<option value="${now.getMonth()}-${now.getFullYear()}">${MESES[now.getMonth()]} ${now.getFullYear()}</option>`;
+            }
+
+            let florDebe = 0, nahuDebe = 0;
+            
+            transacciones.forEach(t => {
+                const montoA = t.paga100 ? t.monto : t.monto/2;
+                if(t.pagador === 'Nahu') florDebe += montoA; else nahuDebe += montoA;
+                
+                let clase = t.pagador === 'Nahu' ? 'text-pink-400 bg-pink-900/20 border-pink-500/30' : 'text-blue-400 bg-blue-900/20 border-blue-500/30';
+                
+                list.innerHTML += `
+                    <li class="bg-black/30 p-3 rounded-xl mb-2 flex justify-between items-center border border-white/5">
+                        <div class="flex-1">
+                            <strong class="text-sm text-white">${t.descripcion}</strong>
+                            <p class="text-[10px] text-gray-400">${t.pagador} pagó total $${t.monto.toLocaleString('es-AR')}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold ${clase} px-2 py-1 rounded-lg border">$${montoA.toLocaleString('es-AR')}</span>
+                            <button class="btn-delete text-red-500/50 hover:text-red-400" data-id="${t.id}"><i class="fa-solid fa-trash pointer-events-none"></i></button>
+                        </div>
+                    </li>`;
+            });
+
+            const neto = florDebe - nahuDebe;
+            const info = document.getElementById('saldo-neto-info');
+            const cont = document.getElementById('saldo-neto-container');
+            document.getElementById('mes-actual-display').innerText = mesSelect.options[mesSelect.selectedIndex].text;
+            
+            cont.className = 'bg-black/30 rounded-2xl p-5 border border-white/10 text-center transition-all duration-500 mb-4 shadow-inner relative z-10';
+            
+            if(neto > 0) {
+                info.innerHTML = `Flor debe:<br>$${Math.round(neto).toLocaleString('es-AR')}`;
+                cont.classList.add('border-pink-500/50', 'bg-pink-900/10');
+                info.className = 'text-2xl font-black text-pink-400 drop-shadow-md';
+            } else if (neto < 0) {
+                info.innerHTML = `Nahu debe:<br>$${Math.round(Math.abs(neto)).toLocaleString('es-AR')}`;
+                cont.classList.add('border-blue-500/50', 'bg-blue-900/10');
+                info.className = 'text-2xl font-black text-blue-400 drop-shadow-md';
+            } else {
+                info.innerText = "¡A mano!";
+                info.className = 'text-2xl font-black text-green-400 drop-shadow-md';
+            }
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const val = document.getElementById('monto').value.replace(/\./g, '').replace(/[^0-9]/g, '');
+            const obj = {
+                monto: parseInt(val, 10),
+                descripcion: document.getElementById('descripcion').value,
+                pagador: document.getElementById('pagador').value,
+                paga100: document.getElementById('paga100').checked,
+                esCuota: document.getElementById('esCuota').checked,
+                cuotasPendientes: parseInt(document.getElementById('cuotasPendientes').value) || 1,
+                fecha: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            document.getElementById('form-content').classList.add('hidden');
+            document.getElementById('animacion-gif').src = "https://media.giphy.com/media/94EQmVHkveNck/giphy.gif";
+            document.getElementById('animacion-container').classList.remove('hidden');
+            
+            await db.collection(COLLECTION_NAME).add(obj);
+            document.getElementById('transaccion-form').reset();
+            document.getElementById('cuotas-fields').style.display = 'none';
+            
+            setTimeout(() => {
+                document.getElementById('animacion-container').classList.add('hidden');
+                document.getElementById('form-content').classList.remove('hidden');
+                cargarTransacciones();
+            }, 2500);
+        }
+
+        window.onload = () => {
+            initGastos();
+            actualizarPuntosUI();
+        };
+    </script>
+</body>
+</html>
